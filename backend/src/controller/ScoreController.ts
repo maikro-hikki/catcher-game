@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { createNewScore, validRScoreInput } from "../service/ScoreService";
-import { createScore } from "../repository/ScoreRepo";
+import { createScore, top100Score } from "../repository/ScoreRepo";
 
 export type addScoreRequest = {
   username: string;
@@ -11,7 +11,17 @@ export const test = (req: Request, res: Response) => {
   console.log("test");
   res.status(200).json({
     status: "test success",
+    message: "tested successfully",
+  });
+};
+
+export const top100Ranking = async (req: Request, res: Response) => {
+  const top100 = await top100Score();
+  console.log("top100");
+  res.status(200).json({
+    status: "score retrieved",
     message: "Score added successfully",
+    data: top100,
   });
 };
 

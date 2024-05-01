@@ -2,10 +2,16 @@ import express, { NextFunction, Request, Response } from "express";
 import dot from "dotenv";
 import { createTable, dropAllTable, dummyScore } from "./initializeDB";
 import ScoreRoute from "./route/ScoreRoute";
+import cors from "cors";
 
 dot.config();
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 
 async function main() {
   try {

@@ -17,18 +17,21 @@ export async function createTable() {
 }
 
 export async function dummyScore() {
-  try {
-    const newScore: NewScore = {
-      username: "user1",
-      score: 500,
-    };
+  for (let i = 0; i < 150; i++) {
+    try {
+      const newScore: NewScore = {
+        username: "user" + i,
+        score: 500 + i,
+      };
 
-    const createdPerson = await createScore(newScore);
-  } catch (error) {
-    console.error("Error creating person:", error);
-    console.error("Error stack trace:", error.stack);
-  } finally {
-    // Close the database connection when done
-    // await db.destroy();
+      const createdPerson = await createScore(newScore);
+    } catch (error) {
+      console.error("Error creating person:", error);
+      console.error("Error stack trace:", error.stack);
+      break;
+    } finally {
+      // Close the database connection when done
+      // await db.destroy();
+    }
   }
 }

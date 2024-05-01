@@ -9,6 +9,15 @@ export async function findAllScoreByUsername(username: string) {
     .executeTakeFirst();
 }
 
+export async function top100Score() {
+  return await db
+    .selectFrom("score")
+    .selectAll()
+    .orderBy("score", "desc")
+    .limit(100)
+    .execute();
+}
+
 export async function createScore(score: NewScore) {
   return await db
     .insertInto("score")
