@@ -1,31 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchRank } from "../service/FetchService";
+import { UseQueryResult } from "@tanstack/react-query";
+import { RankResponseType } from "../service/FetchService";
 
 type RankDialogProps = {
   dialogRef: React.RefObject<HTMLDialogElement>;
   toggleDialog: () => void;
+  query: UseQueryResult<RankResponseType, Error>;
 };
 
-const RankDialog = ({ dialogRef, toggleDialog }: RankDialogProps) => {
-  const rankQuery = useQuery({
-    queryFn: () => fetchRank(),
-    queryKey: ["ranks"],
-  });
-
-  if (rankQuery.isLoading) {
-    return <h1 className="text-gray-950 text-lg mt-20">loading...</h1>;
-  }
-
-  if (rankQuery.isError) {
-    console.log("postQuery error");
-    return <pre className="text-gray-950 text-lg mt-20">Error</pre>;
-  }
-
+const RankDialog = ({ dialogRef, toggleDialog, query }: RankDialogProps) => {
   return (
     <dialog ref={dialogRef}>
       <div>Leaderboard</div>
       <section>
-        {rankQuery.data?.data.map((score, index) => (
+        {query.data?.data.map((score, index) => (
           <li
             key={score.score_id}
             className="flex flex-col gap-y-6 mb-5 text-lg"

@@ -1,5 +1,7 @@
 import { useRef } from "react";
 import RankDialog from "../../dialog/RankDialog";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRank } from "../../service/FetchService";
 
 type ButtonProp = {
   bgColour: string;
@@ -15,14 +17,30 @@ const RankButton = ({
   text,
 }: ButtonProp) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const rankQuery = useQuery({
+    queryFn: () => fetchRank(),
+    queryKey: ["ranks"],
+  });
+
+  if (rankQuery.isLoading) {
+    return <h1 className="text-gray-950 text-lg mt-20">loading...</h1>;
+  }
+
+  if (rankQuery.isError) {
+    console.log("postQuery error");
+    return <pre className="text-gray-950 text-lg mt-20">Error</pre>;
+  }
 
   function toggleDialog() {
+    rankQuery.refetch();
     if (!dialogRef.current) {
       return;
     }
-    dialogRef.current.hasAttribute("open")
-      ? dialogRef.current.close()
-      : dialogRef.current.showModal();
+    if (dialogRef.current.hasAttribute("open")) {
+      dialogRef.current.close();
+    } else {
+      dialogRef.current.showModal();
+    }
   }
 
   return (
@@ -33,7 +51,11 @@ const RankButton = ({
       >
         {text}
       </button>
-      <RankDialog dialogRef={dialogRef} toggleDialog={toggleDialog} />
+      <RankDialog
+        dialogRef={dialogRef}
+        toggleDialog={toggleDialog}
+        query={rankQuery}
+      />
     </>
   );
 };

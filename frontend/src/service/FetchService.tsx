@@ -4,7 +4,7 @@ type ScoreList = {
   score: number;
 };
 
-type RankResponseType = {
+export type RankResponseType = {
   status: string;
   message: string;
   data: ScoreList[];
@@ -17,6 +17,6 @@ export const fetchRank = async (): Promise<RankResponseType> => {
   if (!response.ok) {
     throw new Error("failed to fetch ranks");
   }
-  console.log("fetchPosts success");
+  console.log("fetch ranks success");
   return response.json();
 };

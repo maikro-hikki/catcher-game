@@ -17,7 +17,6 @@ export const test = (req: Request, res: Response) => {
 
 export const top100Ranking = async (req: Request, res: Response) => {
   const top100 = await top100Score();
-  console.log("top100");
   res.status(200).json({
     status: "score retrieved",
     message: "Score added successfully",
