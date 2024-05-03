@@ -7,8 +7,6 @@ export type addScoreRequest = {
   score: string;
 };
 
-const io = require("../index");
-
 export const test = (req: Request, res: Response) => {
   console.log("test");
   res.status(200).json({
@@ -42,7 +40,6 @@ export const addScore = async (
       const addedScore = await createScore(formattedResponse);
       if (addedScore) {
         console.log("test");
-        io.emit("rankingSocket", await top100Ranking2());
         console.log("test2");
         res.status(200).json({
           status: addedScore.score_id,

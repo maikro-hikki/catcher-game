@@ -31,27 +31,6 @@ app.use("/api/v1", ScoreRoute);
 
 const PORT = process.env.APP_PORT || 4000;
 
-// main().then(() => {
-//   const server = app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-//   });
-
-//   const io: SocketIOServer = require("socket.io")(server, {
-//     cors: {
-//       origin: "http://localhost:5173",
-//     },
-//   });
-
-//   io.on("connection", async (socket) => {
-//     console.log("connected socket id ", socket.id);
-//     socket.emit("rankingSocket", await top100Ranking2());
-//     socket.emit("test", "top100Ranking2()");
-//     socket.on("disconnect", () => {
-//       console.log("A client disconnected");
-//     });
-//   });
-//   module.exports = io;
-// });
 main().then(() => {
   const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
@@ -76,6 +55,4 @@ main().then(() => {
       console.log("A client disconnected");
     });
   });
-
-  module.exports = io;
 });

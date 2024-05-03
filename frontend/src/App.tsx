@@ -2,36 +2,12 @@ import { Outlet, useLocation } from "react-router-dom";
 import RankButton from "./component/button/RankButton";
 import PlayButton from "./component/button/PlayButton";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import io from "socket.io-client";
-import { useEffect } from "react";
 
 const queryClient = new QueryClient();
-const socket = io("http://localhost:3000");
-export interface Score {
-  score: number;
-  score_id: number;
-  username: string;
-}
 
 function App() {
   const location = useLocation();
   const currentUrl = location.pathname;
-
-  useEffect(() => {
-    socket.on("rankingSocket", (scores: Score[]) => {
-      console.log("cardioooooo");
-      console.log(scores);
-    });
-    socket.on("test", (data: string) => {
-      console.log("test");
-      console.log(data);
-    });
-
-    // Clean up the event listener when the component unmounts
-    return () => {
-      socket.off("topScores");
-    };
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

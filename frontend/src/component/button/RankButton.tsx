@@ -2,6 +2,7 @@ import { useRef } from "react";
 import RankDialog from "../../dialog/RankDialog";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRank } from "../../service/FetchService";
+import { useNavigate } from "react-router-dom";
 
 type ButtonProp = {
   bgColour: string;
@@ -17,30 +18,32 @@ const RankButton = ({
   text,
 }: ButtonProp) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const rankQuery = useQuery({
-    queryFn: () => fetchRank(),
-    queryKey: ["ranks"],
-  });
+  const navigate = useNavigate();
+  // const rankQuery = useQuery({
+  //   queryFn: () => fetchRank(),
+  //   queryKey: ["ranks"],
+  // });
 
-  if (rankQuery.isLoading) {
-    return <h1 className="text-gray-950 text-lg mt-20">loading...</h1>;
-  }
+  // if (rankQuery.isLoading) {
+  //   return <h1 className="text-gray-950 text-lg mt-20">loading...</h1>;
+  // }
 
-  if (rankQuery.isError) {
-    console.log("postQuery error");
-    return <pre className="text-gray-950 text-lg mt-20">Error</pre>;
-  }
+  // if (rankQuery.isError) {
+  //   console.log("postQuery error");
+  //   return <pre className="text-gray-950 text-lg mt-20">Error</pre>;
+  // }
 
   function toggleDialog() {
-    rankQuery.refetch();
-    if (!dialogRef.current) {
-      return;
-    }
-    if (dialogRef.current.hasAttribute("open")) {
-      dialogRef.current.close();
-    } else {
-      dialogRef.current.showModal();
-    }
+    // rankQuery.refetch();
+    // if (!dialogRef.current) {
+    //   return;
+    // }
+    // if (dialogRef.current.hasAttribute("open")) {
+    //   dialogRef.current.close();
+    // } else {
+    //   dialogRef.current.showModal();
+    // }
+    navigate("/ranking");
   }
 
   return (
@@ -51,11 +54,11 @@ const RankButton = ({
       >
         {text}
       </button>
-      <RankDialog
+      {/* <RankDialog
         dialogRef={dialogRef}
         toggleDialog={toggleDialog}
         query={rankQuery}
-      />
+      /> */}
     </>
   );
 };

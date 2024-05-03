@@ -2,42 +2,56 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { io } from "socket.io-client";
 import { Score } from "../App";
+import { NavLink } from "react-router-dom";
+import Leaderboard from "../component/leaberboard/Leaderboard";
 
 type ScoreInput = {
   username: string;
   score: number;
 };
 
-const socket = io("http://localhost:3000");
-
 const Ranking = () => {
-  const [lead, setLead] = useState<Score[]>([]);
   const { register, handleSubmit } = useForm<ScoreInput>();
 
-  const handleLogin = (form: ScoreInput) => {
-    socket.emit("addingScore", form);
-  };
-
-  useEffect(() => {
-    socket.on("rankingSocket", (scores: Score[]) => {
-      setLead(scores);
-      console.log("cardioooooo");
-      console.log(scores);
-    });
-    socket.on("test", (data: string) => {
-      console.log("test");
-      console.log(data);
-    });
-
-    // Clean up the event listener when the component unmounts
-    return () => {
-      socket.off("topScores");
-    };
-  }, []);
+  // const handleLogin = (form: ScoreInput) => {
+  //   socket.emit("addingScore", form);
+  // };
 
   return (
-    <div className="bg-white text-blue-950 mx-auto rounded-lg border dark:border-gray-700 shadow-lg w-64 h-64 mt-40">
-      {/* <section className=""> */}
+    <div className="flex flex-col justify-center items-center h-screen">
+      <div className="h-[1050px] w-screen max-w-[1900px] flex flex-col flex-wrap relative">
+        <div className="w-full flex justify-between">
+          <div className="hidden md:block">
+            <img
+              className="md:h-28 h-10 w-auto object-contain"
+              src="src/assets/CATCH-GAME.png"
+              alt="game title"
+            ></img>
+          </div>
+          <div className="bg-blue-950 border-8 rounded-3xl border-blue-600 font-bold md:text-6xl text-4xl md:px-10 md:py-6 px-7 py-4 shadow-2xl">
+            <div className="aspect-w-1 aspect-h-1">
+              <div className="aspect-content">Leaderboard</div>
+            </div>
+          </div>
+          <div className="my-auto mr-4">
+            <NavLink to="/">
+              <div className="bg-green-900 hover:bg-green-700 border-green-600 border-4 rounded-3xl px-7 py-4 shadow-2xl">
+                🏠︎
+              </div>
+            </NavLink>
+          </div>
+        </div>
+        <Leaderboard />
+      </div>
+    </div>
+  );
+};
+
+export default Ranking;
+
+{
+  /* <div className="bg-white text-blue-950 mx-auto rounded-lg border dark:border-gray-700 shadow-lg w-64 h-64 mt-40">
+      {/* <section className=""> 
       <form onSubmit={handleSubmit(handleLogin)}>
         <input
           type="text"
@@ -61,9 +75,6 @@ const Ranking = () => {
           </div>
         ))}
       </div>
-      {/* </section> */}
-    </div>
-  );
-};
-
-export default Ranking;
+      {/* </section> 
+    </div> */
+}
