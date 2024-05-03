@@ -11,7 +11,7 @@ type ScoreInput = {
 };
 
 const Ranking = () => {
-  const { register, handleSubmit } = useForm<ScoreInput>();
+  // const { register, handleSubmit } = useForm<ScoreInput>();
 
   // const handleLogin = (form: ScoreInput) => {
   //   socket.emit("addingScore", form);
