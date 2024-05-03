@@ -20,7 +20,7 @@ const Play = () => {
       console.log("elem = " + elementWidth);
     };
 
-    handleResize(); // Initial calculation on component mount
+    handleResize();
 
     window.addEventListener("resize", handleResize);
 
@@ -59,7 +59,7 @@ const Play = () => {
             </div>
           </NavLink>
         </div>
-        <div className="flex-1 "></div>
+        <div className="flex-1 " ref={(ref) => console.log("IT GOT CALLED",ref)}></div>
         <div className="md:h-40 h-20 flex justify-between">
           <ArrowButton
             boatPosition={boatPosition}

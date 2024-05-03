@@ -7,25 +7,27 @@ export interface Score {
   username: string;
 }
 
-const socket = io("http://localhost:3000");
 
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<Score[]>([]);
 
   useEffect(() => {
+const socket = io("http://localhost:3000");
+
     socket.on("rankingSocket", (scores: Score[]) => {
       setLeaderboard(scores);
       console.log("cardioooooo");
       console.log(scores);
     });
-    socket.on("test", (data: string) => {
-      console.log("test");
-      console.log(data);
-    });
+    // socket.on("test", (data: string) => {
+    //   console.log("test");
+    //   console.log(data);
+    // });
 
     // Clean up the event listener when the component unmounts
     return () => {
-      socket.off("topScores");
+      socket.off("rankingSocket");
+      socket.close();
     };
   }, []);
   return (

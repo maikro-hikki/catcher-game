@@ -15,6 +15,7 @@ const ArrowButton = ({
   setBoatPosition,
   elementWidth,
   imageWidth,
+  // props
 }: ButtonProp) => {
   const [isPressed, setIsPressed] = useState(false);
   const intervalRef = useRef<number | undefined>();
@@ -31,6 +32,8 @@ const ArrowButton = ({
         );
       }, 10); // Change this interval duration as desired
     } else {
+      console.log("elem=== ", elementWidth);
+      console.log("img=== ", imageWidth);
       if (!elementWidth || !imageWidth) {
         elementWidth = 1;
         imageWidth = 1;
