@@ -7,6 +7,8 @@ export type addScoreRequest = {
   score: string;
 };
 
+const io = require("../index");
+
 export const test = (req: Request, res: Response) => {
   console.log("test");
   res.status(200).json({
@@ -23,6 +25,10 @@ export const top100Ranking = async (req: Request, res: Response) => {
     data: top100,
   });
 };
+export async function top100Ranking2() {
+  const top100 = await top100Score();
+  return top100;
+}
 
 export const addScore = async (
   req: Request<{}, {}, addScoreRequest>,
@@ -35,6 +41,9 @@ export const addScore = async (
       const formattedResponse = createNewScore(req.body);
       const addedScore = await createScore(formattedResponse);
       if (addedScore) {
+        console.log("test");
+        io.emit("rankingSocket", await top100Ranking2());
+        console.log("test2");
         res.status(200).json({
           status: addedScore.score_id,
           message: "Score added successfully",
@@ -44,7 +53,7 @@ export const addScore = async (
         res.status(500).json({ message: "Registration error" });
       }
     } catch (error) {
-      res.status(500).json({ message: "Server registration error" });
+      res.status(500).json({ message: error.message });
     }
   } else {
     res.status(400).json({ message: validInput });
