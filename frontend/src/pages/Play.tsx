@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import BoatDirection from "../component/play/BoatDirection";
+import GameArea from "../component/play/GameArea";
 
 const Play = () => {
   return (
@@ -20,8 +20,8 @@ const Play = () => {
           </NavLink>
         </div>
         {/* ref={(ref) => console.log("IT GOT CALLED",ref)} */}
-        <div className="flex-1 "></div>
-        <BoatDirection />
+        {/* <DropArea /> */}
+        <GameArea />
       </div>
     </div>
   );
