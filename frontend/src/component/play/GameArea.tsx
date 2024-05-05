@@ -4,6 +4,7 @@ import {
   useEffect,
   useCallback,
   KeyboardEventHandler,
+  useLayoutEffect,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { KeyboardEvent } from "react";
@@ -11,13 +12,15 @@ import FallingObject from "./FallingObject";
 
 const GameArea = () => {
   const [boatPosition, setBoatPosition] = useState(1);
+  const [boatWidth, setBoatWidth] = useState<number | undefined>(0);
   const elementRef = useRef<HTMLDivElement>(null);
   const [elementWidth, setElementWidth] = useState<number | undefined>(0);
   const boatRef = useRef<HTMLImageElement>(null);
-  const [boatWidth, setBoatWidth] = useState<number | undefined>(0);
+  const fallingRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | undefined>();
   const navigate = useNavigate();
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [boatTopPosition, setBoatTopPosition] = useState(1);
   // const [isKeyDown, setIsKeyDown] = useState(false);
   // const [shouldRender, setShouldRender] = useState(false);
 
@@ -36,6 +39,7 @@ const GameArea = () => {
       // console.log("1. imgWidth", image.getBoundingClientRect().width);
       setElementWidth(elementWidth);
       setBoatWidth(boatWidth);
+      setBoatTopPosition(800);
       // console.log("2. elementWidth", elementWidth);
       // console.log("2. imgWidth", imgWidth);
     };
@@ -152,7 +156,11 @@ const GameArea = () => {
   // const [element, setElement] = useState<{ positionTop: number; positionLeft: number } | null>(null);
 
   const [elements, setElements] = useState<
-    { positionTop: number; positionLeft: number; fileName: string }[]
+    {
+      positionTop: number;
+      positionLeft: number;
+      fileName: string;
+    }[]
   >([]);
   const [timer, setTimer] = useState<number | null>(null);
 
@@ -161,8 +169,8 @@ const GameArea = () => {
       setTimer(
         window.setInterval(() => {
           // set position of the falling element
-          const newPositionTop = 0;
-          const newPositionLeft = Math.floor(
+          const initialPositionTop = 0;
+          const initialPositionLeft = Math.floor(
             Math.random() * ((elementWidth as number) - 200)
           );
 
@@ -193,10 +201,11 @@ const GameArea = () => {
           }
 
           const newElement = {
-            positionTop: newPositionTop,
-            positionLeft: newPositionLeft,
+            positionTop: initialPositionTop,
+            positionLeft: initialPositionLeft,
             fileName: name,
           };
+
           setElements((prevElements) => [...prevElements, newElement]);
         }, 1000) // Generate an element every 1000 milliseconds (1 second)
       );
@@ -206,9 +215,67 @@ const GameArea = () => {
           clearInterval(timer);
         }
         setTimer(null);
-      }, 10000); // Clear the interval after 60 seconds
+      }, 10000); // How long should the game last
     }
   };
+
+  // Function to update the positions of the falling elements
+  const updateElementPositions = () => {
+    setElements((prevElements) =>
+      prevElements.map((element) => {
+        if (element.positionTop >= 700) {
+          return { ...element };
+        }
+        const updatedTop = element.positionTop + 2;
+        return { ...element, positionTop: updatedTop };
+      })
+    );
+  };
+
+  // Use useEffect to continuously update the element positions
+  useEffect(() => {
+    const intervalId = setInterval(updateElementPositions, 10); // Adjust the interval duration as needed
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkCollisions = () => {
+      setElements((prevElements) => {
+        const updatedElements = prevElements.filter((element) => {
+          const elementRect = {
+            top: element.positionTop,
+            left: element.positionLeft,
+            width: 128,
+            height: 144,
+          };
+
+          if (
+            elementRect.left + elementRect.width >= boatPosition &&
+            elementRect.left <= boatPosition + 128 &&
+            elementRect.top + elementRect.height >= boatTopPosition &&
+            elementRect.top <= boatTopPosition + 144
+          ) {
+            // Exclude the element from the updated array
+            console.log("collidedddddddddddd");
+            return false;
+          }
+
+          return true; // Keep the element in the array
+        });
+
+        return updatedElements;
+      });
+    };
+
+    const intervalId = setInterval(checkCollisions, 5); // Adjust the interval duration as needed
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [boatPosition, boatTopPosition, elements]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -221,6 +288,7 @@ const GameArea = () => {
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+
       if (timer) {
         clearInterval(timer);
       }
@@ -242,6 +310,7 @@ const GameArea = () => {
       <div className="flex-1 flex flex-col relative" ref={elementRef}>
         {elements.map((element, index) => (
           <div
+            ref={fallingRef}
             key={index}
             style={{
               width: "128px",
@@ -250,12 +319,9 @@ const GameArea = () => {
               top: `${element.positionTop}px`,
               // top: 0,
               left: `${element.positionLeft}px`,
-              animationName: "falling-animation",
-              animationDuration: "3s",
-              animationTimingFunction: "linear",
-              animationFillMode: "forwards",
             }}
             // className="md:h-36 h-10 md:w-32 w-9"
+            className=""
           >
             <img
               className="h-full w-full"
@@ -265,8 +331,8 @@ const GameArea = () => {
           </div>
         ))}
         <img
-          style={{ marginLeft: `${boatPosition}px` }}
-          className="md:h-36 h-10 w-32 relative mt-auto"
+          style={{ left: `${boatPosition}px`, top: `${boatTopPosition}px` }}
+          className="md:h-36 h-10 md:w-32 w-9 absolute"
           src="src/assets/boat.png"
           alt="boat"
           ref={boatRef}
@@ -285,20 +351,9 @@ const GameArea = () => {
           🢂
         </button>
         <button onClick={handleItemCreate} className="bg-black">
-          Toggle Rendering
+          play
         </button>
       </div>
-      {/* CSS Keyframes */}
-      <style>{`
-        @keyframes falling-animation {
-          from {
-            top: 0;
-          }
-          to {
-            top: 90%; /* Adjust this value to control how far the element falls */
-          }
-        }
-      `}</style>
     </div>
   );
 };
