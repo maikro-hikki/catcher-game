@@ -20,7 +20,7 @@ const Leaderboard = () => {
     // Clean up the event listener when the component unmounts
     return () => {
       socket.off("rankingSocket");
-      // socket.close();
+      socket.close();
     };
   }, []);
   return (

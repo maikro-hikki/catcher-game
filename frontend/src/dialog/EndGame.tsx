@@ -22,9 +22,10 @@ const EndGame = ({ score }: Props) => {
   const handleLogin = (form: UsernameInput) => {
     const scoreInput: ScoreInput = { username: form.username, score: score };
     const socket = io("http://localhost:3000");
-    socket.on("connect", () => {
-      socket.emit("addingScore", scoreInput);
-    });
+    // socket.on("connect", () => {
+    socket.emit("addingScore", scoreInput);
+    socket.off("rankingSocket");
+    // });
     navigate("/ranking");
   };
   return (

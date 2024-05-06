@@ -403,6 +403,13 @@ const GameArea = () => {
     }
   }, [elementWidth, gameOngoing, gameTimer, timer]);
 
+  //clears out all falling items from the field when the game time is finished
+  useEffect(() => {
+    if (gameTimer >= 10) {
+      setElements([]);
+    }
+  }, [gameTimer]);
+
   // Function to update the positions of the falling elements
   const updateElementPositions = (gameTime: number) => {
     setElements((prevElements) =>
