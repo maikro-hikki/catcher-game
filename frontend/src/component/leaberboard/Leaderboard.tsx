@@ -15,14 +15,12 @@ const Leaderboard = () => {
 
     socket.on("rankingSocket", (scores: Score[]) => {
       setLeaderboard(scores);
-      console.log("cardioooooo");
-      console.log(scores);
     });
 
     // Clean up the event listener when the component unmounts
     return () => {
       socket.off("rankingSocket");
-      socket.close();
+      // socket.close();
     };
   }, []);
   return (

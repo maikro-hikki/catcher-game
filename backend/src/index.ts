@@ -44,8 +44,8 @@ main().then(() => {
 
   io.on("connection", async (socket) => {
     console.log("connected socket id ", socket.id);
-    socket.emit("rankingSocket", await top100Ranking2());
     socket.emit("test", "top100Ranking2()");
+    socket.emit("rankingSocket", await top100Ranking2());
     socket.on("addingScore", async (scoreData: NewScore) => {
       await createScore(scoreData);
       console.log("Received new score:", scoreData);

@@ -17,11 +17,11 @@ export async function createTable() {
 }
 
 export async function dummyScore() {
-  for (let i = 0; i < 150; i++) {
+  for (let i = 0; i < 20; i++) {
     try {
       const newScore: NewScore = {
         username: "user" + i,
-        score: 500 + i,
+        score: i,
       };
 
       const createdPerson = await createScore(newScore);

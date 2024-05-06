@@ -3,7 +3,7 @@ import GameArea from "../component/play/GameArea";
 
 const Play = () => {
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
+    <div className="flex flex-col justify-center items-center h-screen  overflow-hidden">
       <div className="h-[1050px] w-screen max-w-[1900px] flex flex-col flex-wrap relative">
         <div className="sticky w-full flex justify-between">
           <div>

@@ -34,15 +34,6 @@ const RankButton = ({
   // }
 
   function toggleDialog() {
-    // rankQuery.refetch();
-    // if (!dialogRef.current) {
-    //   return;
-    // }
-    // if (dialogRef.current.hasAttribute("open")) {
-    //   dialogRef.current.close();
-    // } else {
-    //   dialogRef.current.showModal();
-    // }
     navigate("/ranking");
   }
 
