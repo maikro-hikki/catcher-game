@@ -1,10 +1,14 @@
 import express, { NextFunction, Request, Response } from "express";
 import dot from "dotenv";
 import { createTable, dropAllTable, dummyScore } from "./initializeDB";
-import ScoreRoute from "./route/ScoreRoute";
+// import ScoreRoute from "./route/ScoreRoute";
 import cors from "cors";
 import { Server as SocketIOServer } from "socket.io";
-import { top100Ranking, top100Ranking2 } from "./controller/ScoreController";
+import {
+  getRank,
+  saveScore,
+  top100Ranking,
+} from "./controller/ScoreController";
 import { NewScore } from "./types";
 import { createScore } from "./repository/ScoreRepo";
 
@@ -27,7 +31,7 @@ async function main() {
   }
 }
 
-app.use("/api/v1", ScoreRoute);
+// app.use("/api/v1", ScoreRoute);
 
 const PORT = process.env.APP_PORT || 4000;
 
@@ -44,12 +48,15 @@ main().then(() => {
 
   io.on("connection", async (socket) => {
     console.log("connected socket id ", socket.id);
-    socket.emit("test", "top100Ranking2()");
-    socket.emit("rankingSocket", await top100Ranking2());
+    socket.emit("rankingSocket", await top100Ranking());
     socket.on("addingScore", async (scoreData: NewScore) => {
-      await createScore(scoreData);
-      console.log("Received new score:", scoreData);
-      io.emit("rankingSocket", await top100Ranking2());
+      const savedData = await saveScore(scoreData);
+      socket.emit("savedScore", savedData);
+      io.emit("rankingSocket", await top100Ranking());
+    });
+    socket.on("getRank", async (score_id: number) => {
+      const rank = await getRank(score_id);
+      socket.emit("rankCallBack", rank);
     });
     socket.on("disconnect", () => {
       console.log("A client disconnected");

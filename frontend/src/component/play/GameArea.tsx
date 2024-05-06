@@ -17,11 +17,13 @@ type FallingItem = {
   score: number;
 };
 
+const timeLimit = 0;
+
 const GameArea = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [dialogContent, setDialogContent] = useState<React.ReactNode>(null);
   const [gameOngoing, setGameOngoing] = useState(false);
-  const [gameTimer, setGameTimer] = useState(0);
+  const [gameTimer, setGameTimer] = useState(10);
   const [isKeyDown, setIsKeyDown] = useState(false);
   const [score, setScore] = useState(0);
   const [boatPosition, setBoatPosition] = useState(1);
@@ -85,22 +87,23 @@ const GameArea = () => {
   //   }
   // }
 
-  // useEffect(() => {
-  //   const myDialog = document.getElementById("myDialog") as HTMLDialogElement;
-  //   if (myDialog) {
-  //     setDialogContent(
-  //       <StartGame myDialog={myDialog} setGameOngoing={setGameOngoing} />
-  //     );
-  //     myDialog.showModal();
-  //   }
+  useEffect(() => {
+    // const myDialog = document.getElementById("myDialog") as HTMLDialogElement;
+    const dialogNode = dialogRef.current;
+    if (dialogNode) {
+      setDialogContent(
+        <StartGame myDialog={dialogNode} setGameOngoing={setGameOngoing} />
+      );
+      dialogNode.showModal();
+    }
 
-  //   return () => {
-  //     if (myDialog) {
-  //       myDialog.close();
-  //       setDialogContent(null);
-  //     }
-  //   };
-  // }, []);
+    return () => {
+      if (dialogNode) {
+        dialogNode.close();
+        // setDialogContent(null);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const dialogNode = dialogRef.current;
@@ -109,10 +112,11 @@ const GameArea = () => {
       return;
     }
 
-    if (gameTimer > 9 && dialogNode) {
+    if (gameTimer < 1 && dialogNode) {
+      setDialogContent(<EndGame score={score} />);
       dialogNode.showModal();
     }
-  }, [gameTimer]);
+  }, [gameTimer, score]);
 
   const handleMouseDown = (direction: string) => {
     if (isMouseDown) return;
@@ -121,7 +125,7 @@ const GameArea = () => {
     const distance = 5; // Change this value to adjust the distance
     if (direction === "left") {
       intervalRef.current = window.setInterval(() => {
-        if (gameTimer <= 10) {
+        if (gameTimer > timeLimit) {
           setBoatPosition((prevBoatPosition) =>
             prevBoatPosition - distance >= 0 ? prevBoatPosition - distance : 0
           );
@@ -133,7 +137,7 @@ const GameArea = () => {
       }
       const maxPosition = (elementWidth as number) - (boatWidth as number); // Change this value to the maximum position
       intervalRef.current = window.setInterval(() => {
-        if (gameTimer <= 10) {
+        if (gameTimer > timeLimit) {
           setBoatPosition((prevBoatPosition) =>
             prevBoatPosition + distance <= maxPosition
               ? prevBoatPosition + distance
@@ -159,22 +163,22 @@ const GameArea = () => {
 
   const handleKeyDown = useCallback(
     (direction: string) => {
-      console.log("inside handleMouseDown");
+      // console.log("inside handleMouseDown");
       if (isKeyDown) return;
       setIsMouseDown(true);
       setIsKeyDown(true);
       const distance = 5; // Change this value to adjust the distance
       if (direction === "left") {
-        console.log("left elem=== ", elementWidth);
-        console.log("left img=== ", boatWidth);
+        // console.log("left elem=== ", elementWidth);
+        // console.log("left img=== ", boatWidth);
         intervalRef.current = window.setInterval(() => {
           setBoatPosition((prevBoatPosition) =>
             prevBoatPosition - distance >= 0 ? prevBoatPosition - distance : 0
           );
         }, 10); // Change this interval duration as desired
       } else {
-        console.log("right elem=== ", elementWidth);
-        console.log("right img=== ", boatWidth);
+        // console.log("right elem=== ", elementWidth);
+        // console.log("right img=== ", boatWidth);
         if (!elementWidth || !boatWidth) {
           navigate("/");
         }
@@ -380,7 +384,9 @@ const GameArea = () => {
             };
 
             setElements((prevElements) => [...prevElements, newElement]);
-            setGameTimer((prevTimer) => prevTimer + 1);
+            if (gameTimer > timeLimit) {
+              setGameTimer((prevTimer) => prevTimer - 1);
+            }
           }, 1000) // Generate an element every 1000 milliseconds (1 second)
         );
 
@@ -391,21 +397,23 @@ const GameArea = () => {
           setTimer(null);
           // console.log("before game lenth setting", gameOngoing);
           // setGameOngoing(false);
-          setGameTimer((prevTimer) => prevTimer + 1);
+          if (gameTimer > timeLimit) {
+            setGameTimer((prevTimer) => prevTimer - 1);
+          }
         }, 10000); // How long should the game last
       }
       // setGameOngoing(false);
     };
     // console.log("not recalling handleItemCreate", gameOngoing);
-    if (gameOngoing && gameTimer < 10) {
-      console.log("called handleItemCreate");
+    if (gameOngoing && gameTimer > timeLimit) {
+      // console.log("called handleItemCreate");
       handleItemCreate();
     }
   }, [elementWidth, gameOngoing, gameTimer, timer]);
 
   //clears out all falling items from the field when the game time is finished
   useEffect(() => {
-    if (gameTimer >= 10) {
+    if (gameTimer <= timeLimit) {
       setElements([]);
     }
   }, [gameTimer]);
@@ -417,7 +425,7 @@ const GameArea = () => {
         // if (element.positionTop >= 700) {
         //   return { ...element };
         // }
-        if (gameTime < 10) {
+        if (gameTime > timeLimit) {
           const updatedTop = element.positionTop + 2;
           return { ...element, positionTop: updatedTop };
         } else {
@@ -578,12 +586,18 @@ const GameArea = () => {
             // onLoad={handleBoatLoad}
           ></img>
         </div>
-        <div className="flex flex-col justify-between">
-          <div className="bg-red-700 text-center md:text-3xl text-lg rounded-3xl border-4 border-red-400">
-            Score: {score}
+        <div className="flex flex-col justify-between align pt-10">
+          <div className="mx-auto">
+            <div className="bg-red-700 text-center md:w-32 w-16 flex flex-col md:text-3xl text-lg rounded-2xl border-4 border-red-400">
+              <div>Score</div>
+              <div>{score}</div>
+            </div>
           </div>
-          <div className="bg-red-700 text-center md:text-3xl text-lg rounded-3xl border-4 border-red-400">
-            Timer: {gameTimer}
+          <div className="mx-auto">
+            <div className="bg-red-700 text-center md:w-32 w-16 flex flex-col md:text-3xl text-lg rounded-2xl border-4 border-red-400">
+              <div>Timer</div>
+              <div>{gameTimer}</div>
+            </div>
           </div>
           {!gameOngoing ? (
             <button
@@ -607,7 +621,8 @@ const GameArea = () => {
       </div>
       <dialog ref={dialogRef} className="rounded-3xl">
         <div className="flex flex-col justify-between text-center md:gap-10 gap-6 text-yellow-300 bg-red-900 rounded-3xl border-4 border-red-600 backdrop:bg-black backdrop:opacity-65 md:text-6xl text-4xl md:px-10 md:py-6 px-7 py-4">
-          <EndGame score={score} />
+          {/* <EndGame score={score} /> */}
+          {dialogContent}
         </div>
       </dialog>
     </>

@@ -8,16 +8,18 @@ const Play = () => {
         <div className="sticky w-full flex justify-between">
           <div>
             <img
-              className="md:h-28 h-10 w-auto object-contain"
+              className="md:h-28 h-12 w-auto object-contain"
               src="src/assets/CATCH-GAME.png"
               alt="game title"
             ></img>
           </div>
-          <NavLink to="/" className="my-auto mr-5">
-            <div className="bg-green-900 hover:bg-green-700 md:text-2xl border-green-600 border-4 rounded-3xl px-3 py-2 shadow-2xl">
-              🏠︎
-            </div>
-          </NavLink>
+          <div className="md:w-32 w-14 md:mx-10 mx-2 flex flex-col justify-center">
+            <NavLink to="/" className="mx-auto">
+              <div className="bg-green-900 hover:bg-green-700 md:text-2xl border-green-600 border-4 rounded-3xl px-3 py-2 shadow-2xl">
+                🏠︎
+              </div>
+            </NavLink>
+          </div>
         </div>
         {/* ref={(ref) => console.log("IT GOT CALLED",ref)} */}
         {/* <DropArea /> */}

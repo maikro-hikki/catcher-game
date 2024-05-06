@@ -1,6 +1,9 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { Score } from "../component/leaberboard/Leaderboard";
+import { useScore } from "../context/useScore";
 
 type UsernameInput = {
   username: string;
@@ -10,7 +13,7 @@ type Props = {
   score: number;
 };
 
-type ScoreInput = {
+export type ScoreInput = {
   username: string;
   score: number;
 };
@@ -18,27 +21,34 @@ type ScoreInput = {
 const EndGame = ({ score }: Props) => {
   const { register, handleSubmit } = useForm<UsernameInput>();
   const navigate = useNavigate();
+  const { saveCurrentScore } = useScore();
+  const socket = io("http://localhost:3000");
+
+  // useEffect(() => {
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, [socket]);
 
   const handleLogin = (form: UsernameInput) => {
     const scoreInput: ScoreInput = { username: form.username, score: score };
-    const socket = io("http://localhost:3000");
-    // socket.on("connect", () => {
     socket.emit("addingScore", scoreInput);
-    socket.off("rankingSocket");
-    // });
+    socket.on("savedScore", (savedScore: Score) => {
+      saveCurrentScore(savedScore);
+    });
     navigate("/ranking");
   };
   return (
     <>
-      <div>You Scored {score} points</div>
+      <div className="md:text-4xl text-xl">You Scored {score} points</div>
       <form
         onSubmit={handleSubmit(handleLogin)}
-        className="flex flex-col gap-10"
+        className="flex flex-col md:gap-8 gap-6"
       >
         <input
-          className="bg-red-950 rounded-lg px-4 text-center"
+          className="bg-red-950 rounded-lg px-4 text-center md:text-4xl text-xl"
           type="text"
-          placeholder="Username"
+          placeholder="Type in a name"
           {...register("username")}
         ></input>
         <div className="flex justify-center">
