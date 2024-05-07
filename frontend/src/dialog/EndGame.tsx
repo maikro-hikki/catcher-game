@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -22,27 +21,22 @@ const EndGame = ({ score }: Props) => {
   const { register, handleSubmit } = useForm<UsernameInput>();
   const navigate = useNavigate();
   const { saveCurrentScore } = useScore();
-  const socket = io("http://localhost:3000");
+  const serverPort = import.meta.env.VITE_SERVER_PORT || 3000;
+  const socket = io(`http://localhost:${serverPort}`);
 
-  // useEffect(() => {
-  //   return () => {
-  //     socket.close();
-  //   };
-  // }, [socket]);
-
-  const handleLogin = (form: UsernameInput) => {
+  const scoreSubmit = (form: UsernameInput) => {
     const scoreInput: ScoreInput = { username: form.username, score: score };
     socket.emit("addingScore", scoreInput);
     socket.on("savedScore", (savedScore: Score) => {
       saveCurrentScore(savedScore);
     });
-    navigate("/ranking");
+    navigate("/summary");
   };
   return (
     <>
       <div className="md:text-4xl text-xl">You Scored {score} points</div>
       <form
-        onSubmit={handleSubmit(handleLogin)}
+        onSubmit={handleSubmit(scoreSubmit)}
         className="flex flex-col md:gap-8 gap-6"
       >
         <input

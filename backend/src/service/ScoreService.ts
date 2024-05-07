@@ -1,17 +1,4 @@
-import { addScoreRequest } from "../controller/ScoreController";
-import { NewScore } from "../types";
-
-export function validRScoreInput(input: addScoreRequest): string {
-  if (usernameValidation(input.username) !== "Valid") {
-    return usernameValidation(input.username);
-  }
-
-  if (scoreValidation(input.score) !== "Valid") {
-    return scoreValidation(input.score);
-  }
-
-  return "Valid";
-}
+//example implementation of validation methods for future development
 
 // checks if username only has letters and numbers, is 4-20 characters long, and
 // not null or empty or blank
@@ -42,14 +29,4 @@ function scoreValidation(score: string): string {
   } catch (error) {
     return "Invalid score";
   }
-}
-
-export function createNewScore(input: addScoreRequest): NewScore {
-  const formattedScore = parseInt(input.score);
-  const newScore: NewScore = {
-    username: input.username,
-    score: formattedScore,
-  };
-
-  return newScore;
 }

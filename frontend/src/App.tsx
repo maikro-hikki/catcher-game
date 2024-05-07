@@ -3,6 +3,7 @@ import RankButton from "./component/button/RankButton";
 import PlayButton from "./component/button/PlayButton";
 
 function App() {
+  //used for checking the URL path and display content accordingly
   const location = useLocation();
   const currentUrl = location.pathname;
 

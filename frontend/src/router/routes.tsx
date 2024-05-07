@@ -4,6 +4,7 @@ import Play from "../pages/Play";
 import Ranking from "../pages/Ranking";
 import NotFoundPage from "../pages/NotFoundPage";
 import { ScoreProvider } from "../context/ScoreContext";
+import Summary from "../pages/Summary";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/play", element: <Play /> },
       { path: "/ranking", element: <Ranking /> },
+      { path: "/summary", element: <Summary /> },
     ],
   },
 ]);

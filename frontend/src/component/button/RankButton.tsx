@@ -1,7 +1,3 @@
-import { useRef } from "react";
-import RankDialog from "../../dialog/RankDialog";
-import { useQuery } from "@tanstack/react-query";
-import { fetchRank } from "../../service/FetchService";
 import { useNavigate } from "react-router-dom";
 
 type ButtonProp = {
@@ -17,40 +13,19 @@ const RankButton = ({
   borderColour,
   text,
 }: ButtonProp) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
-  // const rankQuery = useQuery({
-  //   queryFn: () => fetchRank(),
-  //   queryKey: ["ranks"],
-  // });
-
-  // if (rankQuery.isLoading) {
-  //   return <h1 className="text-gray-950 text-lg mt-20">loading...</h1>;
-  // }
-
-  // if (rankQuery.isError) {
-  //   console.log("postQuery error");
-  //   return <pre className="text-gray-950 text-lg mt-20">Error</pre>;
-  // }
 
   function toggleDialog() {
     navigate("/ranking");
   }
 
   return (
-    <>
-      <button
-        className={`${bgColour} border-4 ${hoverColour} rounded-3xl ${borderColour} font-bold md:text-6xl text-4xl md:px-10 md:py-6 px-7 py-4 shadow-2xl`}
-        onClick={toggleDialog}
-      >
-        {text}
-      </button>
-      {/* <RankDialog
-        dialogRef={dialogRef}
-        toggleDialog={toggleDialog}
-        query={rankQuery}
-      /> */}
-    </>
+    <button
+      className={`${bgColour} border-4 ${hoverColour} rounded-3xl ${borderColour} font-bold md:text-6xl text-4xl md:px-10 md:py-6 px-7 py-4 shadow-2xl`}
+      onClick={toggleDialog}
+    >
+      {text}
+    </button>
   );
 };
 

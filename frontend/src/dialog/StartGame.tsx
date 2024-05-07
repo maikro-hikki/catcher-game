@@ -1,7 +1,4 @@
-// { dialogRef, toggleDialog, query }: RankDialogProps
-
 interface Prop {
-  //   dialogRef: React.RefObject<HTMLDialogElement>;
   myDialog: HTMLDialogElement;
   setGameOngoing: React.Dispatch<React.SetStateAction<boolean>>;
 }

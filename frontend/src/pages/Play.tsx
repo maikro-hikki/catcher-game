@@ -21,8 +21,6 @@ const Play = () => {
             </NavLink>
           </div>
         </div>
-        {/* ref={(ref) => console.log("IT GOT CALLED",ref)} */}
-        {/* <DropArea /> */}
         <GameArea />
       </div>
     </div>
